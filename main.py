@@ -1,9 +1,25 @@
-#from datetime import datetime
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort
+from flask_sqlalchemy import SQLAlchemy
+import datetime
+
 
 app = Flask(__name__)
 api = Api(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+db = SQLAlchemy(app)
+
+class EmployeeModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    department = db.Column(db.String(50), nullable=False)
+    salary = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"Video(name = {name}, views = {views}, email = {email}, department = {department}, salary = {salary})"
+
+db.create_all( )
 
 employee_put_args = reqparse.RequestParser()
 employee_put_args.add_argument("id", type=int, help="Please fill in your id number.", required=True)
@@ -11,7 +27,7 @@ employee_put_args.add_argument("name", type=str, help="Please fill in your name.
 employee_put_args.add_argument("email", type=str, help="Please fill in your email address.", required=True)
 employee_put_args.add_argument("department", type=str, help="Please fill in the name of department.", required=True)
 employee_put_args.add_argument("salary", type=float, help="Please fill in the salary.", required=True)
-#employee_put_args.add_argument("birth_date", type=datetime, help="Please fill in the birth date.", required=True)
+#employee_put_args.add_argument("birth_date", type=int, help="Please fill in the birth date.", required=True)
 
 employees = {}
 
