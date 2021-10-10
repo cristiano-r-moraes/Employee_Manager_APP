@@ -1,5 +1,4 @@
 import requests
-from werkzeug.wrappers import response
 
 BASE = "http://127.0.0.1:5000/"
 
@@ -32,9 +31,6 @@ for i in range(len(employees_list)):
     response = requests.put(BASE + "employee/" + str(i), employees_list[i])
     print(response.json())
 
-input()
-response = requests.delete(BASE + "employee/0")
-print(response)
 input()
 response = requests.get(BASE + "employee/2")
 print(response.json())
