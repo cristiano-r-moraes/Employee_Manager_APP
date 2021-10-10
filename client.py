@@ -27,9 +27,17 @@ employees_list = [
                     }
                  ]
 
+
+input()
 response = requests.get(BASE + "employee/1")
 print(response.json())
 
 input()
-response = requests.patch(BASE + "employee/1", {"department":"Back-End", "salary":3000.00})
+response = requests.delete(BASE + "employee/4")
+print(response)
+
+input()
+response = requests.get(BASE + "employee/1")
 print(response.json())
+#response = requests.patch(BASE + "employee/1", {"department":"Back-End", "salary":3000.00})
+#print(response.json())

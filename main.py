@@ -81,6 +81,15 @@ class Employees(Resource):
 
         return result
     
+    @marshal_with(resource_fields)
+    def delete(self, employee_id):
+        result = EmployeeModel.query.filter_by(id=employee_id).first()
+        if not result:
+            abort(404) #Could not find employee with this id
+        db.session.delete(result)
+        db.session.commit()
+        return '', 204 #204 - deleted successfully
+        
 api.add_resource(Employees, "/employee/<int:employee_id>")
 
 if __name__ == "__main__":
