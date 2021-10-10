@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 #import datetime
+#veirfy the id number 
 
 app = Flask(__name__)
 api = Api(app)
@@ -18,14 +19,19 @@ class EmployeeModel(db.Model):
     def __repr__(self):
         return f"Video(name = {name}, email = {email}, department = {department}, salary = {salary})"
 
-db.create_all( )
-
 employee_put_args = reqparse.RequestParser()
 employee_put_args.add_argument("name", type=str, help="Please fill in your name.", required=True)
 employee_put_args.add_argument("email", type=str, help="Please fill in your email address.", required=True)
 employee_put_args.add_argument("department", type=str, help="Please fill in the name of department.", required=True)
 employee_put_args.add_argument("salary", type=float, help="Please fill in the salary.", required=True)
 #employee_put_args.add_argument("birth_date", type=int, help="Please fill in the birth date.", required=True)
+
+employee_update_args = reqparse.RequestParser()
+employee_update_args.add_argument("name", type=str, help="Please fill in your name.")
+employee_update_args.add_argument("email", type=str, help="Please fill in your email address.")
+employee_update_args.add_argument("department", type=str, help="Please fill in the name of department.")
+employee_update_args.add_argument("salary", type=float, help="Please fill in the salary.")
+#employee_update_args.add_argument("birth_date", type=int, help="Please fill in the birth date.", required=True)
 
 resource_fields = {
     'id': fields.Integer,
@@ -54,6 +60,26 @@ class Employees(Resource):
         db.session.add(employee)
         db.session.commit()
         return employee, 201 #201 - added the employee successfully
+
+    @marshal_with(resource_fields)
+    def patch(self, employee_id):
+        args = employee_update_args.parse_args()
+        result = EmployeeModel.query.filter_by(id=employee_id).first()
+        if not result:
+            abort(404, message="Video doesn't exist, cannot update")
+
+        if args['name']:
+            result.name = args['name']
+        if args['email']:
+            result.email = args['email']
+        if args['department']:
+            result.department = args['department']
+        if args['salary']:
+            result.salary = args['salary']
+        
+        db.session.commit()
+
+        return result
     
 api.add_resource(Employees, "/employee/<int:employee_id>")
 

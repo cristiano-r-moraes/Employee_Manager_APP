@@ -27,10 +27,14 @@ employees_list = [
                     }
                  ]
 
-for i in range(len(employees_list)):
-    response = requests.put(BASE + "employee/" + str(i), employees_list[i])
-    print(response.json())
+#for i in range(len(employees_list)):
+#   response = requests.put(BASE + "employee/" + str(i), employees_list[i])
+#    response = requests.put(BASE + "employee/" + str(1), employees_list[1])
+#    print(response.json())
+
+response = requests.get(BASE + "employee/1")
+print(response.json())
 
 input()
-response = requests.get(BASE + "employee/2")
+response = requests.patch(BASE + "employee/1", {"department":"Back-End", "salary":3000.00})
 print(response.json())
