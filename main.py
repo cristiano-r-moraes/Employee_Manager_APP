@@ -42,13 +42,21 @@ resource_fields = {
 }
 
 class Employees(Resource):
-    @marshal_with(resource_fields)
-    def get(self, employee_id):
-        result = EmployeeModel.query.filter_by(id=employee_id).first()
-        if not result:
-            abort(404, message="Could not find employee with this id")
-        return result
 
+    @marshal_with(resource_fields)
+    def get(self, employee_id=None):
+        if employee_id:              
+            result = EmployeeModel.query.filter_by(id=employee_id).first()
+            if not result:
+                abort(404, message="Could not find employee with this id")
+            return result
+        else:
+            result = EmployeeModel.query.all()
+            if not result:
+                abort(404, message="Could not find employee with this id")
+            return result
+        
+        
     @marshal_with(resource_fields)
     def put(self, employee_id): #function to add a new employee
         args = employee_put_args.parse_args()
@@ -88,9 +96,11 @@ class Employees(Resource):
             abort(404) #Could not find employee with this id
         db.session.delete(result)
         db.session.commit()
-        return '', 204 #204 - deleted successfully
-        
-api.add_resource(Employees, "/employee/<int:employee_id>")
+        return '', 204 #204 - deleted successfully       
+
+
+api.add_resource(Employees, "/employees/<int:employee_id>", "/employees/")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
