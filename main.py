@@ -17,7 +17,17 @@ class EmployeeModel(db.Model):
     salary = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
-        return f"Video(name = {name}, email = {email}, department = {department}, salary = {salary})"
+        return f"{self.name} - {self.email} - {self.department} - {self.salary}"
+
+class ReportsModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    department = db.Column(db.String(50), nullable=False)
+    salary = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f"{self.name} - {self.email} - {self.department} - {self.salary}"
 
 employee_put_args = reqparse.RequestParser()
 employee_put_args.add_argument("name", type=str, help="Please fill in your name.", required=True)
@@ -99,7 +109,16 @@ class Employees(Resource):
         return '', 204 #204 - deleted successfully       
 
 
+class Reports(Resource):
+
+    @marshal_with(resource_fields)
+    def get(self):
+            result = ReportsModel.query.all()
+            return result
+
+
 api.add_resource(Employees, "/employees/<int:employee_id>", "/employees/")
+api.add_resource(Reports, "/reports/employees/age/")
 
 
 if __name__ == "__main__":
