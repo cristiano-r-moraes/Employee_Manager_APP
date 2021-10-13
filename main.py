@@ -1,13 +1,16 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
+from flask_httpauth import HTTPBasicAuth
 #import datetime
 #veirfy the id number 
 
 app = Flask(__name__)
 api = Api(app)
+auth = HTTPBasicAuth()
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
+
 
 class EmployeeModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -51,8 +54,20 @@ resource_fields = {
     'salary': fields.Float
 }
 
+USER_DATA = {
+    "admin": "SuperSecretPwd"
+}
+
+@auth.verify_password
+def verify(username, password):
+    if not (username and password):
+        return False
+    return USER_DATA.get(username) == password
+
+
 class Employees(Resource):
 
+    @auth.login_required
     @marshal_with(resource_fields)
     def get(self, employee_id=None):
         if employee_id:              
@@ -66,7 +81,7 @@ class Employees(Resource):
                 abort(404, message="Could not find employee with this id")
             return result
         
-        
+    @auth.login_required    
     @marshal_with(resource_fields)
     def put(self, employee_id): #function to add a new employee
         args = employee_put_args.parse_args()
@@ -79,6 +94,7 @@ class Employees(Resource):
         db.session.commit()
         return employee, 201 #201 - added the employee successfully
 
+    @auth.login_required
     @marshal_with(resource_fields)
     def patch(self, employee_id):
         args = employee_update_args.parse_args()
@@ -99,6 +115,7 @@ class Employees(Resource):
 
         return result
     
+    @auth.login_required
     @marshal_with(resource_fields)
     def delete(self, employee_id):
         result = EmployeeModel.query.filter_by(id=employee_id).first()
@@ -111,6 +128,7 @@ class Employees(Resource):
 
 class Reports(Resource):
 
+    @auth.login_required
     @marshal_with(resource_fields)
     def get(self):
             result = ReportsModel.query.all()
