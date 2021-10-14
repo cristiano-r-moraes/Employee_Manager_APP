@@ -22,7 +22,7 @@ class EmployeeModel(db.Model):
     salary = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
-        return f"Employee(name = {self.name}, email = {self.views}, department = {self.likes}, salary = {self.salary})"
+        return f"Employee(name = {self.name}, email = {self.email}, department = {self.department}, salary = {self.salary})"
 
 class ReportsModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,7 +32,7 @@ class ReportsModel(db.Model):
     salary = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
-        return f"Reports(name = {self.name}, email = {self.views}, department = {self.likes}, salary = {self.salary})"
+        return f"Reports(name = {self.name}, email = {self.email}, department = {self.department}, salary = {self.salary})"
 
 
 employee_put_args = reqparse.RequestParser()
