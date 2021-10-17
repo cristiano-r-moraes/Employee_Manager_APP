@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask.scaffold import F
 from flask_restful import Api, Resource, marshal, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
@@ -125,16 +126,35 @@ class Employees(Resource):
 
 class Reports_salary(Resource):
     
-    reports_salary_fields = {'average': fields.Float}
-    reports_salary_fields['lowest'] = {}
-    reports_salary_fields['lowest']['id'] = fields.Integer
-    reports_salary_fields['lowest']['name'] = fields.String
-    reports_salary_fields['lowest']['email'] = fields.String
-    reports_salary_fields['lowest']['department'] = fields.String
-    reports_salary_fields['lowest']['salary'] = fields.Float
-                 
+    reports_salary_fields = {}
+    reports_salary_fields['id'] = fields.Integer(attribute='id')
+    reports_salary_fields['name'] = fields.String(attribute='name')
+    reports_salary_fields['email'] = fields.String(attribute='email')
+    reports_salary_fields['department'] = fields.String(attribute='department')
+    reports_salary_fields['salary'] = fields.Float(attribute='salary')
+
+    resource_fields_2 = {}    
+    resource_fields_2['lowest'] = fields.Nested(reports_salary_fields)
+    resource_fields_2['highest'] = fields.Nested(reports_salary_fields)
+    resource_fields_2['average'] = fields.Float
+
+    #reports_salary_fields['lowest'] = {}
+    #reports_salary_fields['lowest']['id'] = fields.Integer(attribute='id')
+    #reports_salary_fields['lowest']['name'] = fields.String(attribute='name')
+    #reports_salary_fields['lowest']['email'] = fields.String(attribute='email')
+    #reports_salary_fields['lowest']['department'] = fields.String(attribute='department')
+    #reports_salary_fields['lowest']['salary'] = fields.Float(attribute='salary')
+    #reports_salary_fields['highest'] = {}
+    #reports_salary_fields['highest']['id'] = fields.Integer
+    #reports_salary_fields['highest']['name'] = fields.String
+    #reports_salary_fields['highest']['email'] = fields.String
+    #reports_salary_fields['highest']['department'] = fields.String
+    #reports_salary_fields['highest']['salary'] = fields.Float
+    #reports_salary_fields['average'] = fields.Float
+    
+                    
     @auth.login_required
-    @marshal_with(reports_salary_fields)
+    @marshal_with(resource_fields_2)
     def get(self):                              
             max_salary = db.session.query(db.func.max(EmployeeModel.salary)).scalar()
             result_max = EmployeeModel.query.filter_by(salary=max_salary).first() #get the line correspondemt -> serialize this object
@@ -142,14 +162,24 @@ class Reports_salary(Resource):
             min_salary = db.session.query(db.func.min(EmployeeModel.salary)).scalar()
             result_min = EmployeeModel.query.filter_by(salary=min_salary).first()
 
-            avg_salary = db.session.query(db.func.avg(EmployeeModel.salary)).scalar()            
+            avg_salary = db.session.query(db.func.avg(EmployeeModel.salary)).scalar()         
+         
+            employee_1 = {'id': result_min.id,
+                          'name': result_min.name, 
+                          'email': result_min.email, 
+                          'department': result_min.department, 
+                          'salary': result_min.salary}
 
-            #data1 = result_max
-            #data2 = result_min
-            #data3 = {"average":  avg_salary}  
+            employee_2 = {'id': result_max.id,
+                          'name': result_max.name, 
+                          'email': result_max.email, 
+                          'department': result_max.department, 
+                          'salary': result_max.salary}          
 
-            data = {"name": result_max.name, "email": result_max.email, "department": result_max.department, "salary": result_max.salary, "average": avg_salary}
-            
+            data = {'average': avg_salary,
+                    'lowest': employee_1,
+                    'highest': employee_2}                            
+                                         
             return data
   
 class Reports_age(Resource):
