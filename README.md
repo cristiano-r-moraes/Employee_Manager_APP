@@ -9,6 +9,8 @@ This is an aplication intended to manage employee's information and reports.
 In order to run the program in your local environment, remember to fill in your personal information for the user and password to access the 
 methods implemented in the API. These are related with the environment variables: 'admin_key' and 'password'.
 
+Python version used in this project: Python 3.8.10
+
 The information about the extensions used in python are in the requirements.txt file.
 
 ## Setup
