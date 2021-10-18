@@ -42,7 +42,7 @@ pip install -r requirements.txt
  
 * Start project
 ```
-python3 -m flask run
+flask run -h localhost -p 8000
 ```
 
 
