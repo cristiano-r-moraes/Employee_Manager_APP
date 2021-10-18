@@ -191,4 +191,4 @@ api.add_resource(Reports_salary, "/reports/employees/salary/" )
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="localhost", port=8000, debug=True)
