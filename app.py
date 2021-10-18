@@ -183,32 +183,12 @@ class Reports_salary(Resource):
                     'highest': employee_2}                            
                                          
             return data
-
-#Resource referring to the Age Reports
-class Reports_age(Resource):
-    #Resource Fields -> Age report
-    reports_age_fields = {
-                            'younger': {    
-                                'id': fields.Integer,
-                                'name': fields.String,
-                                'email': fields.String,
-                                'department': fields.String,
-                                'salary': fields.Float},
-                            'average': fields.Float,
-                         }
-                         
-    #Implementation of the GET method 
-    @auth.login_required
-    @marshal_with(reports_age_fields)
-    def get(self):            
-        result = EmployeeModel.query.filter_by(salary=3000.00).first()
-             
-        return result          
+  
 
 #Routes setup
 api.add_resource(Employees, "/employees/<int:employee_id>", "/employees/")
 api.add_resource(Reports_salary, "/reports/employees/salary/" )
-api.add_resource(Reports_age, "/reports/employees/age/" )
+
 
 if __name__ == "__main__":
     app.run(debug=True)
