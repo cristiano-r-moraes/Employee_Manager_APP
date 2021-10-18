@@ -32,14 +32,14 @@ employee_put_args.add_argument("name", type=str, help="Please fill in your name.
 employee_put_args.add_argument("email", type=str, help="Please fill in your email address.", required=True)
 employee_put_args.add_argument("department", type=str, help="Please fill in the name of department.", required=True)
 employee_put_args.add_argument("salary", type=float, help="Please fill in the salary.", required=True)
-employee_put_args.add_argument("birth_date", type=str, help="Please fill the birth_date.", required=True)
+employee_put_args.add_argument("birth_date", type=str, help="Please fill the birth date.", required=True)
 
 employee_update_args = reqparse.RequestParser()
 employee_update_args.add_argument("name", type=str, help="Please fill in your name.")
 employee_update_args.add_argument("email", type=str, help="Please fill in your email address.")
 employee_update_args.add_argument("department", type=str, help="Please fill in the name of department.")
 employee_update_args.add_argument("salary", type=float, help="Please fill in the salary.")
-employee_put_args.add_argument("birth_date", type=str, help="Please fill the birth_date.")
+employee_put_args.add_argument("birth_date", type=str, help="Please fill the birth date.")
 
 
 #Get the values from the environment variables 
@@ -93,7 +93,7 @@ class Employees(Resource):
         if result:
             abort(409, message="Employee id taken...")
         
-        employee = EmployeeModel(id=employee_id, name=args['name'], email=args['email'], department=args['department'], salary=args['salary']) 
+        employee = EmployeeModel(id=employee_id, name=args['name'], email=args['email'], department=args['department'], salary=args['salary'], birth_date=args['birth_date']) 
         db.session.add(employee)
         db.session.commit()
         return employee, 201 #201 - added the employee successfully
