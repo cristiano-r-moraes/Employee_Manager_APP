@@ -3,6 +3,7 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from flask_httpauth import HTTPBasicAuth
+from datetime import datetime
 import os
 
 
@@ -183,11 +184,80 @@ class Reports_salary(Resource):
                     'highest': employee_2}                            
                                          
             return data
+            
+#Resource referring to the Age Reports
+class Reports_age(Resource):
+    #Resource Fields -> Age report
+    resource_fields = {}
+    resource_fields['id'] = fields.Integer(attribute='id')
+    resource_fields['name'] = fields.String(attribute='name')
+    resource_fields['email'] = fields.String(attribute='email')
+    resource_fields['department'] = fields.String(attribute='department')
+    resource_fields['salary'] = fields.Float(attribute='salary')
+    resource_fields['birth_date'] = fields.String(attribute='birth_date')
+
+    reports_age_fields = {}    
+    reports_age_fields['younger'] = fields.Nested(resource_fields)
+    reports_age_fields['older'] = fields.Nested(resource_fields)
+    reports_age_fields['average'] = fields.Float
+
+    #Implementation of the GET method 
+    @auth.login_required
+    @marshal_with(reports_age_fields)
+    def get(self):            
+        #This section is to get the data referring to the age
+        min_age = db.session.query(db.func.max(EmployeeModel.birth_date)).scalar()
+        result_min = EmployeeModel.query.filter_by(birth_date=min_age).first() 
+
+        max_age = db.session.query(db.func.min(EmployeeModel.birth_date)).scalar()
+        result_max = EmployeeModel.query.filter_by(birth_date=max_age).first()
+
+        #Part to calculate the average age (aproximation considering only years)
+
+        #Max age
+        max_date = result_max.birth_date
+        date_object_max = datetime.strptime(max_date,"%d-%m-%Y")
+        year_max = date_object_max.year
+        age_max = 2021 - year_max
+
+        #Min age
+        min_date = result_min.birth_date
+        date_object_min = datetime.strptime(min_date,"%d-%m-%Y")
+        year_min = date_object_min.year
+        age_min = 2021 - year_min
+
+        #Average age
+        avg_age=(age_max + age_min)/2
+        
+
+        #Model to output the information to the user
+        employee_1 = {'id': result_min.id,
+                      'name': result_min.name, 
+                      'email': result_min.email, 
+                      'department': result_min.department, 
+                      'salary': result_min.salary,
+                      'birth_date': result_min.birth_date}
+
+        employee_2 = {'id': result_max.id,
+                      'name': result_max.name, 
+                      'email': result_max.email, 
+                      'department': result_max.department, 
+                      'salary': result_max.salary,
+                      'birth_date': result_max.birth_date}      
+
+        
+        data = {'younger': employee_1,
+                'older': employee_2,
+                'average': avg_age}                            
+                                        
+        return data
+
   
 
 #Routes setup
 api.add_resource(Employees, "/employees/<int:employee_id>", "/employees/")
-api.add_resource(Reports_salary, "/reports/employees/salary/" )
+api.add_resource(Reports_salary, "/reports/employees/salary/")
+api.add_resource(Reports_age, "/reports/employees/age/" )
 
 
 if __name__ == "__main__":
