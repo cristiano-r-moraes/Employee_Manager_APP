@@ -14,7 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 
 
-#Declaration of the Tables for the database
+#Declaration of the Table's Model for the database
 class EmployeeModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -57,7 +57,7 @@ def verify(username, password):
     return USER_DATA.get(username) == password
 
 
-#Resource referring to the Eployees
+#Resource referring to the Employees
 class Employees(Resource):
     #Resource Fields -> Employees
     employee_fields = {
@@ -68,6 +68,7 @@ class Employees(Resource):
                         'salary': fields.Float,
                         'birth_date': fields.String
                       }
+                      
     #Implementation of the GET method 
     @auth.login_required #authentication required -> added in all methods
     @marshal_with(employee_fields) #this decorator is meant to make the EmployeesModel object serializable
