@@ -40,7 +40,7 @@ pip install -r requirements.txt
 
 * Fill in the information for the admin_key and password (['admin_key'] and ['password'] with the environment variables)
  
-* Start project (since the port required is 8000)
+* Start project (since the required port is the 8000)
 ```
 flask run -h localhost -p 8000
 ```
