@@ -226,7 +226,8 @@ class Reports_age(Resource):
             counter = counter+1
             if counter == max_id :
                 control_year=control/365 #convert the total days and convert back to years
-                average_age = control_year/(max_id)                
+                average_age = control_year/(max_id)
+                average_age_format = format(average_age, '.1f')#precision of the average value                
         
         #Model to output the information to the user
         employee_1 = {'id': result_min.id,
@@ -246,7 +247,7 @@ class Reports_age(Resource):
         
         data = {'younger': employee_1,
                 'older': employee_2,
-                'average': average_age}                            
+                'average': average_age_format}                            
                                         
         return data
   
