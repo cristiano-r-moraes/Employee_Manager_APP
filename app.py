@@ -3,8 +3,8 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from flask_httpauth import HTTPBasicAuth
-from datetime import datetime
 import os
+import datetime
 
 
 #Configurations setup
@@ -212,24 +212,22 @@ class Reports_age(Resource):
         max_age = db.session.query(db.func.min(EmployeeModel.birth_date)).scalar()
         result_max = EmployeeModel.query.filter_by(birth_date=max_age).first()
 
-        #Part to calculate the average age (aproximation considering only years)
-
-        #Max age
-        max_date = result_max.birth_date
-        date_object_max = datetime.strptime(max_date,"%d-%m-%Y")
-        year_max = date_object_max.year
-        age_max = 2021 - year_max
-
-        #Min age
-        min_date = result_min.birth_date
-        date_object_min = datetime.strptime(min_date,"%d-%m-%Y")
-        year_min = date_object_min.year
-        age_min = 2021 - year_min
-
-        #Average age
-        avg_age=(age_max + age_min)/2
+        #Part to calculate the average age 
+        counter=0
+        control=0
+        average_age=0
+        max_id = db.session.query(db.func.max(EmployeeModel.id)).scalar() #Get the max value for the id -> relation with then numbers of employees
+        employees = EmployeeModel.query.all() #Get the information relating to all of the employees
         
-
+        for employee in employees:
+            checkdate = datetime.datetime.strptime(employee.birth_date, "%d-%m-%Y")
+            days = (datetime.datetime.now()-checkdate).days #convert the age of the employee into days
+            control = days + control 
+            counter = counter+1
+            if counter == max_id :
+                control_year=control/365 #convert the total days and convert back to years
+                average_age = control_year/(max_id)                
+        
         #Model to output the information to the user
         employee_1 = {'id': result_min.id,
                       'name': result_min.name, 
@@ -248,10 +246,9 @@ class Reports_age(Resource):
         
         data = {'younger': employee_1,
                 'older': employee_2,
-                'average': avg_age}                            
+                'average': average_age}                            
                                         
         return data
-
   
 
 #Routes setup
