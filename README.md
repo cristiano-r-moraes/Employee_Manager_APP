@@ -1,5 +1,5 @@
 # Employee_Manager_APP
-This is an aplication intended to manage employee's information and reports.
+This is an aplication (API) intended to manage employee's information and reports.
 
 ## Table of contents
 * [General info](#general-info)
