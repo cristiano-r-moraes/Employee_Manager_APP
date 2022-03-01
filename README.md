@@ -18,6 +18,7 @@ The information about the extensions used in python are in the requirements.txt 
 * cloning repository
 ```
 $ git clone https://github.com/CristianoR12/Employee_Manager_APP.git
+https://github.com/CristianoR12/Employee_Manager_APP.git
 ```
 * Prepare the virtual environment:
 ```
