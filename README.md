@@ -35,7 +35,7 @@ python3 -m pip install flask
 
 * Install all requirements:
 ```
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 * Fill in the information for the admin_key and password (['admin_key'] and ['password'] with the environment variables)
