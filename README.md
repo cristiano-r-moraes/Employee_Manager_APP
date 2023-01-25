@@ -29,8 +29,8 @@ Activating: source env/bin/activate
 
 * Enter your IDE (e.g. VSCode) - in case it is the VSCode
 ```
-python -m pip install --upgrade pip
-python -m pip install flask
+python3 -m pip install --upgrade pip
+python3 -m pip install flask
 ```
 
 * Install all requirements:
